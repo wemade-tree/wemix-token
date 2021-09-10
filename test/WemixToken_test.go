@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/wemade-tree/contract-test/backend"
+	"github.com/wemade-tree/wemix-token/backend"
 )
 
 type (
@@ -178,20 +178,20 @@ func TestWemixOwner(t *testing.T) {
 
 	key, _ := crypto.GenerateKey()
 
-	expecedFail(t, contract, key, "change_unitStaking", big.NewInt(1))
-	expecedFail(t, contract, key, "change_minBlockWaitingWithdrawal", big.NewInt(1))
-	expecedFail(t, contract, key, "change_ecoFund", common.HexToAddress("0x0000000000000000000000000000000000000001"))
-	expecedFail(t, contract, key, "change_wemix", common.HexToAddress("0x0000000000000000000000000000000000000002"))
-	expecedFail(t, contract, key, "change_mintToPartner", big.NewInt(1))
-	expecedFail(t, contract, key, "change_mintToWemix", big.NewInt(1))
-	expecedFail(t, contract, key, "transferOwnership", func() common.Address {
+	expectedFail(t, contract, key, "change_unitStaking", big.NewInt(1))
+	expectedFail(t, contract, key, "change_minBlockWaitingWithdrawal", big.NewInt(1))
+	expectedFail(t, contract, key, "change_ecoFund", common.HexToAddress("0x0000000000000000000000000000000000000001"))
+	expectedFail(t, contract, key, "change_wemix", common.HexToAddress("0x0000000000000000000000000000000000000002"))
+	expectedFail(t, contract, key, "change_mintToPartner", big.NewInt(1))
+	expectedFail(t, contract, key, "change_mintToWemix", big.NewInt(1))
+	expectedFail(t, contract, key, "transferOwnership", func() common.Address {
 		k, _ := crypto.GenerateKey()
 		return crypto.PubkeyToAddress(k.PublicKey)
 	}())
 
 	newOwnerKey, _ := crypto.GenerateKey()
-	expecedSuccess(t, contract, nil, "transferOwnership", crypto.PubkeyToAddress(newOwnerKey.PublicKey))
-	expecedSuccess(t, contract, newOwnerKey, "transferOwnership", contract.Owner)
+	expectedSuccess(t, contract, nil, "transferOwnership", crypto.PubkeyToAddress(newOwnerKey.PublicKey))
+	expectedSuccess(t, contract, newOwnerKey, "transferOwnership", contract.Owner)
 }
 
 //Test to run addAllowedStaker method.
@@ -217,7 +217,7 @@ func TestWemixAllowedPartner(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, r.Status == 1)
 	for _, g := range r.Logs {
-		if g.Topics[0] == contract.Abi.Events["Staked"].Id() {
+		if g.Topics[0] == contract.Abi.Events["Staked"].ID {
 			topics = append(topics, g.Topics...)
 		}
 	}
@@ -265,7 +265,7 @@ func testStake(t *testing.T, contract *backend.Contract, showStakeInfo bool) typ
 
 		serial := (*big.Int)(nil)
 		for _, g := range r.Logs {
-			if g.Topics[0] == contract.Abi.Events["Staked"].Id() {
+			if g.Topics[0] == contract.Abi.Events["Staked"].ID {
 				serial = g.Topics[3].Big()
 			}
 		}

@@ -32,7 +32,7 @@ type Contract struct {
 	BlockDeployed     *big.Int
 }
 
-//NewContract is to create simulatied backend and compile solidity code
+//NewContract is to create simulated backend and compile solidity code
 func NewContract(file, name string) (*Contract, error) {
 
 	ownerKey, _ := crypto.GenerateKey()
@@ -82,7 +82,7 @@ func (p *Contract) compile() error {
 	return nil
 }
 
-//Deploy makes creation contract tx and receives the result by receit.
+//Deploy makes creation contract tx and receives the result by receipt.
 func (p *Contract) Deploy(args ...interface{}) error {
 	input, err := p.Abi.Pack("", args...) //constructor's inputs
 	if err != nil {
@@ -95,7 +95,7 @@ func (p *Contract) Deploy(args ...interface{}) error {
 	tx := types.NewContractCreation(0, big.NewInt(0), 3000000, big.NewInt(0), append(p.Code, input...))
 	//signing
 	tx, _ = types.SignTx(tx, types.HomesteadSigner{}, p.OwnerKey)
-	//sned tx to simulated backend
+	//send tx to simulated backend
 	if err := p.Backend.SendTransaction(context.Background(), tx); err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ func (p *Contract) LowCall(method string, args ...interface{}) ([]interface{}, e
 	}
 }
 
-//Execute executes the contract's method. For that, take tx with singer's key, method and inputs,
+//Execute executes the contract's method. For that, take tx with signer's key, method and inputs,
 //and then send it to the simulated backend, and return the receipt.
 func (p *Contract) Execute(key *ecdsa.PrivateKey, method string, args ...interface{}) (*types.Receipt, error) {
 	if key == nil {

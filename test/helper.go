@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/wemade-tree/contract-test/backend"
+	"github.com/wemade-tree/wemix-token/backend"
 )
 
 type typeKeyMap map[common.Address]*ecdsa.PrivateKey
@@ -60,14 +60,14 @@ func executeChangeMethod(t *testing.T, contract *backend.Contract, methodExceptC
 }
 
 //causes contract execution to fail.
-func expecedFail(t *testing.T, contract *backend.Contract, key *ecdsa.PrivateKey, method string, arg ...interface{}) {
+func expectedFail(t *testing.T, contract *backend.Contract, key *ecdsa.PrivateKey, method string, arg ...interface{}) {
 	r, err := contract.Execute(key, method, arg...)
 	assert.NoError(t, err)
 	assert.True(t, r.Status == 0)
 }
 
 //checks if the contract execution is successful..
-func expecedSuccess(t *testing.T, contract *backend.Contract, key *ecdsa.PrivateKey, method string, arg ...interface{}) {
+func expectedSuccess(t *testing.T, contract *backend.Contract, key *ecdsa.PrivateKey, method string, arg ...interface{}) {
 	r, err := contract.Execute(key, method, arg...)
 	assert.NoError(t, err)
 	assert.True(t, r.Status == 1)
